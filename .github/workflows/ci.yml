@@ -1,0 +1,34 @@
+name: .NET CI 
+ 
+on: 
+  push: 
+    branches: 
+      - develop 
+      - main 
+      - feature/* 
+ 
+jobs: 
+  build-and-test: 
+    runs-on: ubuntu-latest 
+ 
+    steps: 
+    - uses: actions/checkout@v4 
+      with: 
+        fetch-depth: 0 
+ 
+    - name: Setup .NET 
+      uses: actions/setup-dotnet@v4 
+      with: 
+        dotnet-version: '8.x' 
+ 
+    - name: Restore dependencies 
+      run: dotnet restore Horizons.sln 
+ 
+    - name: Build 
+      run: dotnet build Horizons.sln --no-restore 
+ 
+    - name: Run Unit Tests 
+      run: dotnet test Horizons.Tests.Unit/Horizons.Tests.Unit.csproj --no-build --verbosity normal 
+ 
+    - name: Run Integration Tests 
+      run: dotnet test Horizons.Tests.Integration/Horizons.Tests.Integration.csproj --no-build --verbosity normal 
